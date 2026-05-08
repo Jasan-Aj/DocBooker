@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>User Dashboard | DocBooker</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#1e293b",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-fixed-dim": "#c0c1ff",
+                      "primary-container": "#10B981",
+                      "inverse-on-surface": "#E9F7F2",
+                      "surface-container-highest": "#dcfce7",
+                      "tertiary": "#4648d4",
+                      "surface": "#E9F7F2",
+                      "on-secondary-container": "#006c49",
+                      "background": "#E9F7F2",
+                      "secondary-container": "#6cf8bb",
+                      "on-tertiary-fixed": "#07006c",
+                      "surface-container-high": "#f0fdf4",
+                      "surface-bright": "#ffffff",
+                      "on-secondary-fixed-variant": "#005236",
+                      "surface-variant": "#dcfce7",
+                      "primary-fixed-dim": "#4edea3",
+                      "tertiary-fixed": "#e1e0ff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#2f2ebe",
+                      "inverse-primary": "#4edea3",
+                      "error": "#ba1a1a",
+                      "on-surface-variant": "#475569",
+                      "on-primary-container": "#ffffff",
+                      "inverse-surface": "#1e293b",
+                      "on-primary-fixed": "#002113",
+                      "primary-fixed": "#6ffbbe",
+                      "tertiary-container": "#6063ee",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed": "#6ffbbe",
+                      "outline-variant": "#cbd5e1",
+                      "on-error": "#ffffff",
+                      "surface-dim": "#cbd5e1",
+                      "secondary-fixed-dim": "#4edea3",
+                      "outline": "#64748b",
+                      "error-container": "#ffdad6",
+                      "primary": "#10B981",
+                      "surface-container-low": "#f1fff8",
+                      "on-background": "#1e293b",
+                      "surface-container": "#f8fafc",
+                      "secondary": "#006c49",
+                      "on-secondary-fixed": "#002113",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#10B981",
+                      "on-primary-fixed-variant": "#005236",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-container": "#fffbff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "8px",
+                      "container-max": "1280px",
+                      "stack-sm": "8px",
+                      "stack-lg": "32px",
+                      "gutter": "24px",
+                      "stack-md": "16px",
+                      "margin-page": "32px"
+              },
+              "fontFamily": {
+                      "body-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "data-mono": ["Inter"],
+                      "h1": ["Inter"],
+                      "h2": ["Inter"],
+                      "h3": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-caps": ["Inter"]
+              },
+              "fontSize": {
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "data-mono": ["14px", {"lineHeight": "1", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                      "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "h3": ["20px", {"lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface h-screen flex overflow-hidden">
+
+    <!-- Left Sidebar -->
+    <aside class="hidden md:flex flex-col w-72 border-r border-outline-variant bg-surface-container-lowest z-50">
+        <!-- Branding -->
+        <div class="h-20 flex items-center px-8 border-b border-outline-variant/30">
+            <span class="font-h2 text-h2 font-bold text-primary flex items-center gap-2">
+                <span class="material-symbols-outlined text-3xl">medical_services</span>
+                DocBooker
+            </span>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex-1 py-8 px-4 overflow-y-auto custom-scrollbar">
+            <nav class="space-y-2">
+                <a class="flex items-center gap-4 px-4 py-3 rounded-xl bg-primary text-on-primary font-semibold shadow-md shadow-primary/20 transition-all duration-200" href="#">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                    <span class="font-body-md">Dashboard</span>
+                </a>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all duration-200" href="#">
+                    <span class="material-symbols-outlined">calendar_today</span>
+                    <span class="font-body-md">Appointments</span>
+                </a>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all duration-200" href="#">
+                    <span class="material-symbols-outlined">description</span>
+                    <span class="font-body-md">Medical Records</span>
+                </a>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all duration-200" href="#">
+                    <span class="material-symbols-outlined">favorite</span>
+                    <span class="font-body-md">My Doctors</span>
+                </a>
+                <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all duration-200" href="#">
+                    <span class="material-symbols-outlined">payments</span>
+                    <span class="font-body-md">Billing</span>
+                </a>
+            </nav>
+
+            <div class="mt-12 px-4">
+                <p class="font-label-caps text-label-caps text-on-surface-variant/60 mb-4 uppercase tracking-widest">General</p>
+                <nav class="space-y-2">
+                    <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all duration-200" href="#">
+                        <span class="material-symbols-outlined">settings</span>
+                        <span class="font-body-md">Settings</span>
+                    </a>
+                    <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all duration-200" href="#">
+                        <span class="material-symbols-outlined">help</span>
+                        <span class="font-body-md">Help Center</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- User Profile Bottom -->
+        <div class="p-6 border-t border-outline-variant/30">
+            <div class="bg-surface-container-low p-4 rounded-2xl flex items-center gap-3">
+                <div class="h-10 w-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">JD</div>
+                <div class="flex-1 overflow-hidden">
+                    <p class="font-body-md font-bold text-on-surface truncate">John Doe</p>
+                    <p class="font-body-sm text-on-surface-variant/70 truncate text-xs">Patient ID: #4421</p>
+                </div>
+                <button class="text-on-surface-variant hover:text-error transition-colors">
+                    <span class="material-symbols-outlined text-xl">logout</span>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 bg-surface-container-low/20">
+        <!-- Top Bar -->
+        <header class="h-20 flex items-center justify-between px-margin-page bg-surface-container-lowest border-b border-outline-variant/30">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden p-2 text-on-surface-variant">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <h1 class="font-h2 text-h2 text-on-surface hidden md:block">Overview</h1>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <div class="hidden lg:flex items-center bg-white rounded-xl px-4 py-2 border border-outline-variant/30 w-80">
+                    <span class="material-symbols-outlined text-on-surface-variant/60 mr-2">search</span>
+                    <input type="text" placeholder="Search records, doctors..." class="bg-transparent border-none focus:ring-0 text-body-sm w-full outline-none">
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <button class="p-2.5 rounded-xl bg-white border border-outline-variant/30 text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <button class="flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded-xl font-body-md font-semibold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
+                        <span class="material-symbols-outlined">add</span>
+                        <span class="hidden sm:inline">Book Appointment</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-margin-page custom-scrollbar">
+            <div class="max-w-6xl mx-auto space-y-gutter">
+                <!-- Welcome Banner -->
+                <div class="bg-primary text-on-primary p-8 rounded-3xl relative overflow-hidden shadow-xl shadow-primary/10">
+                    <div class="relative z-10">
+                        <h2 class="text-3xl font-bold mb-2">Welcome back, John!</h2>
+                        <p class="text-on-primary/80 max-w-md text-lg">Your health is looking stable today. You have an upcoming consultation with Dr. Jenkins in 2 days.</p>
+                        <div class="mt-6 flex gap-4">
+                            <button class="bg-white text-primary px-6 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-transform hover:scale-105 active:scale-95">View Vitals</button>
+                            <button class="bg-white/20 text-white backdrop-blur-md px-6 py-2.5 rounded-xl font-bold text-sm border border-white/30 transition-transform hover:scale-105 active:scale-95">Check Calendar</button>
+                        </div>
+                    </div>
+                    <!-- Decorative Elements -->
+                    <div class="absolute -right-10 -top-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                    <div class="absolute right-20 -bottom-20 w-48 h-48 bg-black/10 rounded-full blur-2xl"></div>
+                    <div class="absolute left-1/2 top-0 w-32 h-32 bg-white/5 rounded-full blur-xl animate-pulse"></div>
+                </div>
+
+                <!-- Bento Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+                    <!-- Featured Appointment -->
+                    <section class="md:col-span-8 bg-white rounded-3xl p-stack-lg shadow-sm border border-outline-variant/30 flex flex-col lg:flex-row gap-gutter group hover:shadow-md transition-all duration-300">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-stack-md">
+                                <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-caps text-[10px] tracking-wider font-bold">NEXT APPOINTMENT</span>
+                            </div>
+                            <h2 class="font-h2 text-h2 text-on-surface mb-1">Dr. Sarah Jenkins</h2>
+                            <p class="font-body-lg text-primary font-bold mb-stack-md">Cardiologist • Specialist</p>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-stack-lg">
+                                <div class="flex items-center gap-3 p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10">
+                                    <span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-xl">calendar_month</span>
+                                    <div>
+                                        <p class="text-[10px] text-on-surface-variant uppercase font-bold">Date</p>
+                                        <p class="text-sm font-bold">Oct 24, 2024</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 p-3 rounded-2xl bg-surface-container-low border border-outline-variant/10">
+                                    <span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-xl">schedule</span>
+                                    <div>
+                                        <p class="text-[10px] text-on-surface-variant uppercase font-bold">Time</p>
+                                        <p class="text-sm font-bold">10:30 AM</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-stack-sm">
+                                <button class="flex-1 bg-primary text-on-primary py-3 rounded-xl font-bold shadow-md shadow-primary/10 hover:shadow-lg hover:translate-y-[-2px] transition-all">Join Consultation</button>
+                                <button class="p-3 bg-surface-container-low text-on-surface-variant rounded-xl border border-outline-variant/20 hover:bg-surface-variant transition-colors">
+                                    <span class="material-symbols-outlined">more_vert</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/3 aspect-[4/5] lg:aspect-auto rounded-2xl overflow-hidden shadow-inner relative">
+                            <img alt="Doctor" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="https://images.unsplash.com/photo-1559839734-2b71f1536785?auto=format&fit=crop&q=80&w=600"/>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                        </div>
+                    </section>
+
+                    <!-- Metrics Sidebar Area -->
+                    <div class="md:col-span-4 space-y-gutter">
+                        <!-- Pulse Card -->
+                        <div class="bg-white rounded-3xl p-6 shadow-sm border border-outline-variant/30 hover:shadow-md transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-2 bg-error/10 rounded-xl">
+                                    <span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-on-surface-variant/60 uppercase">Pulse Rate</span>
+                            </div>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-4xl font-bold text-on-surface">72</span>
+                                <span class="text-sm font-semibold text-on-surface-variant">bpm</span>
+                            </div>
+                            <div class="mt-4 h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+                                <div class="h-full bg-error rounded-full" style="width: 65%"></div>
+                            </div>
+                            <p class="text-[11px] text-on-secondary-container mt-3 font-semibold flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">trending_down</span>
+                                4% lower than avg
+                            </p>
+                        </div>
+
+                        <!-- Sleep Card -->
+                        <div class="bg-white rounded-3xl p-6 shadow-sm border border-outline-variant/30 hover:shadow-md transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-2 bg-tertiary/10 rounded-xl">
+                                    <span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">bedtime</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-on-surface-variant/60 uppercase">Sleep Quality</span>
+                            </div>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-4xl font-bold text-on-surface">7.5</span>
+                                <span class="text-sm font-semibold text-on-surface-variant">hrs</span>
+                            </div>
+                            <div class="mt-4 flex gap-1 h-3">
+                                <div class="flex-1 bg-tertiary rounded-sm"></div>
+                                <div class="flex-1 bg-tertiary rounded-sm"></div>
+                                <div class="flex-1 bg-tertiary rounded-sm"></div>
+                                <div class="flex-1 bg-surface-container-high rounded-sm"></div>
+                            </div>
+                            <p class="text-[11px] text-tertiary mt-3 font-semibold uppercase tracking-wider">Deep sleep: 2.4 hrs</p>
+                        </div>
+                    </div>
+
+                    <!-- Recent Visits -->
+                    <section class="md:col-span-12 bg-white rounded-3xl p-stack-lg shadow-sm border border-outline-variant/30">
+                        <div class="flex items-center justify-between mb-8">
+                            <h2 class="font-h2 text-h2 text-on-surface">Recent Activity</h2>
+                            <button class="px-4 py-2 text-primary font-bold text-sm bg-primary/5 rounded-xl transition-all hover:bg-primary/10">View History</button>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Visit 1 -->
+                            <div class="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 hover:shadow-md transition-all cursor-pointer group">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-12 h-12 rounded-xl bg-white border border-outline-variant/30 flex items-center justify-center text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+                                        <span class="material-symbols-outlined">medical_services</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-on-surface">General Checkup</p>
+                                        <p class="text-xs text-on-surface-variant">Sep 12, 2024</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="px-3 py-1 bg-on-secondary-container/10 text-on-secondary-container rounded-full text-[9px] font-bold uppercase tracking-wider">Completed</span>
+                                    <button class="text-primary text-sm font-bold hover:underline">Details</button>
+                                </div>
+                            </div>
+                            <!-- Visit 2 -->
+                            <div class="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 hover:shadow-md transition-all cursor-pointer group">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-12 h-12 rounded-xl bg-white border border-outline-variant/30 flex items-center justify-center text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+                                        <span class="material-symbols-outlined">vaccines</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-on-surface">Flu Shot</p>
+                                        <p class="text-xs text-on-surface-variant">Aug 20, 2024</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="px-3 py-1 bg-on-secondary-container/10 text-on-secondary-container rounded-full text-[9px] font-bold uppercase tracking-wider">Completed</span>
+                                    <button class="text-primary text-sm font-bold hover:underline">Details</button>
+                                </div>
+                            </div>
+                            <!-- Visit 3 -->
+                            <div class="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/10 hover:shadow-md transition-all cursor-pointer group">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-12 h-12 rounded-xl bg-white border border-outline-variant/30 flex items-center justify-center text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+                                        <span class="material-symbols-outlined">dentistry</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-on-surface">Dental Clean</p>
+                                        <p class="text-xs text-on-surface-variant">July 05, 2024</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="px-3 py-1 bg-on-secondary-container/10 text-on-secondary-container rounded-full text-[9px] font-bold uppercase tracking-wider">Completed</span>
+                                    <button class="text-primary text-sm font-bold hover:underline">Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Navigation Overlay (For logic only) -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-outline-variant flex justify-around p-4 z-50">
+        <button class="text-primary flex flex-col items-center gap-1">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+            <span class="text-[10px] font-bold">Home</span>
+        </button>
+        <button class="text-on-surface-variant flex flex-col items-center gap-1">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <span class="text-[10px] font-bold">Schedule</span>
+        </button>
+        <button class="text-on-surface-variant flex flex-col items-center gap-1">
+            <span class="material-symbols-outlined">person</span>
+            <span class="text-[10px] font-bold">Profile</span>
+        </button>
+    </div>
+
+</body>
+</html>
