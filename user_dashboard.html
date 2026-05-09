@@ -141,13 +141,13 @@
                     <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
                     <span class="font-body-md">Dashboard</span>
                 </a>
-                <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all duration-200" href="#">
+                <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all duration-200" href="appointments.html">
                     <span class="material-symbols-outlined">calendar_today</span>
                     <span class="font-body-md">Appointments</span>
                 </a>
-                <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all duration-200" href="#">
+                <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all duration-200" href="past_records.html">
                     <span class="material-symbols-outlined">description</span>
-                    <span class="font-body-md">Medical Records</span>
+                    <span class="font-body-md">Past Records</span>
                 </a>
                 <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all duration-200" href="#">
                     <span class="material-symbols-outlined">favorite</span>
@@ -210,10 +210,10 @@
                     <button class="p-2.5 rounded-xl bg-white border border-outline-variant/30 text-on-surface-variant hover:bg-primary/5 hover:text-primary transition-all">
                         <span class="material-symbols-outlined">notifications</span>
                     </button>
-                    <button class="flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded-xl font-body-md font-semibold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
+                    <a href="booking.html" class="flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded-xl font-body-md font-semibold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
                         <span class="material-symbols-outlined">add</span>
                         <span class="hidden sm:inline">Book Appointment</span>
-                    </button>
+                    </a>
                 </div>
             </div>
         </header>
@@ -265,11 +265,11 @@
                                 </div>
                             </div>
 
-                            <div class="flex gap-stack-sm">
+                            <div class="flex flex-col sm:flex-row gap-3">
                                 <button class="flex-1 bg-primary text-on-primary py-3 rounded-xl font-bold shadow-md shadow-primary/10 hover:shadow-lg hover:translate-y-[-2px] transition-all">Join Consultation</button>
-                                <button class="p-3 bg-surface-container-low text-on-surface-variant rounded-xl border border-outline-variant/20 hover:bg-surface-variant transition-colors">
-                                    <span class="material-symbols-outlined">more_vert</span>
-                                </button>
+                                <a href="appointment_details.html" 
+                                   onclick="localStorage.setItem('selectedAppointment', JSON.stringify({doctor: 'Dr. Sarah Jenkins', type: 'Cardiologist', date: '2024-10-24', time: '10:30 AM', img: 'https://images.unsplash.com/photo-1559839734-2b71f1536785?auto=format&fit=crop&q=80&w=600'}))"
+                                   class="flex-1 text-center bg-surface-container-low text-on-surface-variant py-3 rounded-xl border border-outline-variant/20 hover:bg-surface-variant transition-colors font-bold text-sm flex items-center justify-center">View Details</a>
                             </div>
                         </div>
                         <div class="lg:w-1/3 aspect-[4/5] lg:aspect-auto rounded-2xl overflow-hidden shadow-inner relative">

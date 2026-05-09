@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Login | DocBooker</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .login-gradient {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+        .input-focus:focus-within {
+            border-color: #10B981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#10B981",
+                      "surface": "#E9F7F2",
+                      "on-surface": "#1e293b",
+                      "on-surface-variant": "#475569",
+                      "outline-variant": "#cbd5e1"
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-surface h-screen flex items-center justify-center p-4 overflow-hidden">
+
+    <div class="max-w-5xl w-full h-full max-h-[700px] bg-white rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col md:flex-row">
+        
+        <!-- Left Side: Illustration (Split View) -->
+        <div class="hidden md:flex md:w-1/2 login-gradient p-10 flex-col justify-between relative overflow-hidden">
+            <!-- Decorative Circles -->
+            <div class="absolute top-[-10%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-[-5%] left-[-5%] w-48 h-48 bg-black/10 rounded-full blur-2xl"></div>
+
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-6">
+                    <span class="material-symbols-outlined text-white text-4xl">medical_services</span>
+                    <span class="text-2xl font-extrabold text-white tracking-tight">DocBooker</span>
+                </div>
+                <h1 class="text-3xl font-extrabold text-white leading-tight mb-3">Your Health Journey Starts Here.</h1>
+                <p class="text-white/80 text-base">Access your medical records, book appointments, and connect with top-rated doctors in seconds.</p>
+            </div>
+
+            <div class="relative z-10">
+                <img src="medical_login_illustration_1778304791154.png" alt="Doctor Illustration" class="w-full max-w-[280px] mx-auto drop-shadow-2xl">
+            </div>
+
+            <div class="relative z-10 flex items-center gap-4 text-white/60 text-xs">
+                <span>© 2024 DocBooker Inc.</span>
+                <span>•</span>
+                <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form -->
+        <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+            <div class="mb-8">
+                <h2 class="text-3xl font-extrabold text-on-surface mb-2">Welcome Back</h2>
+                <p class="text-on-surface-variant font-medium text-sm">Please enter your details to sign in.</p>
+            </div>
+
+            <!-- Social Logins -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <button class="flex items-center justify-center gap-3 py-2.5 px-4 rounded-2xl border border-outline-variant/30 hover:bg-surface transition-all font-bold text-xs">
+                    <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-4 h-4" alt="Google">
+                    Google
+                </button>
+                <button class="flex items-center justify-center gap-3 py-2.5 px-4 rounded-2xl border border-outline-variant/30 hover:bg-surface transition-all font-bold text-xs">
+                    <img src="https://www.svgrepo.com/show/448204/apple.svg" class="w-4 h-4" alt="Apple">
+                    Apple
+                </button>
+            </div>
+
+            <div class="relative flex items-center gap-4 mb-6">
+                <div class="flex-1 h-px bg-outline-variant/30"></div>
+                <span class="text-[9px] font-bold text-on-surface-variant/50 uppercase tracking-widest">or sign in with email</span>
+                <div class="flex-1 h-px bg-outline-variant/30"></div>
+            </div>
+
+            <form class="space-y-4" onsubmit="event.preventDefault(); window.location.href='user_dashboard.html'">
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-on-surface-variant ml-1 uppercase tracking-wider">Email Address</label>
+                    <div class="relative input-focus border-2 border-outline-variant/10 bg-surface/30 rounded-2xl transition-all">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 text-lg">mail</span>
+                        <input type="email" placeholder="name@example.com" class="w-full pl-11 pr-4 py-3 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 text-sm font-medium">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <div class="flex items-center justify-between ml-1">
+                        <label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Password</label>
+                        <a href="#" class="text-[10px] font-bold text-primary hover:underline">Forgot password?</a>
+                    </div>
+                    <div class="relative input-focus border-2 border-outline-variant/10 bg-surface/30 rounded-2xl transition-all">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/60 text-lg">lock</span>
+                        <input type="password" placeholder="••••••••" class="w-full pl-11 pr-4 py-3 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/40 text-sm font-medium">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 ml-1 py-1">
+                    <input type="checkbox" id="remember" class="w-4 h-4 rounded-md border-outline-variant/30 text-primary focus:ring-primary/20">
+                    <label for="remember" class="text-xs text-on-surface-variant font-medium cursor-pointer">Keep me signed in</label>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-primary text-white rounded-2xl font-bold shadow-xl shadow-primary/20 hover:bg-primary/90 hover:scale-[1.01] active:scale-95 transition-all mt-2 text-sm">
+                    Sign In
+                </button>
+            </form>
+
+            <p class="mt-6 text-center text-on-surface-variant font-medium text-xs">
+                Don't have an account? 
+                <a href="signup.html" class="text-primary font-bold hover:underline ml-1">Create Account</a>
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

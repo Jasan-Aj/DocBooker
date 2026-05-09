@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Book Appointment | DocBooker</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #E9F7F2;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .step-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .step-content.active {
+            display: block;
+        }
+        .date-card.selected {
+            background-color: #10B981;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2);
+        }
+        .time-slot.selected {
+            background-color: #10B981;
+            color: white;
+            border-color: #10B981;
+        }
+        .success-circle {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 1.5s ease-in-out forwards;
+        }
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .calendar-day:hover:not(.disabled) {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+        }
+        .calendar-day.selected {
+            background-color: #10B981;
+            color: white !important;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+        }
+        .calendar-day.today {
+            color: #10B981;
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+        .calendar-day.disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#10B981",
+                      "primary-container": "#10B981",
+                      "surface": "#E9F7F2",
+                      "on-surface": "#1e293b",
+                      "on-surface-variant": "#475569",
+                      "outline-variant": "#cbd5e1",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#f1fff8",
+                      "surface-container-high": "#f0fdf4",
+                      "secondary-container": "#6cf8bb",
+                      "on-secondary-container": "#006c49",
+                      "error": "#ba1a1a",
+              },
+              "borderRadius": {
+                      "xl": "0.75rem",
+                      "2xl": "1rem",
+                      "3xl": "1.5rem",
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="text-on-surface min-h-screen flex flex-col bg-surface">
+
+    <!-- Header / Navigation -->
+    <header class="h-20 flex items-center justify-between px-8 bg-white/80 backdrop-blur-md border-b border-outline-variant/30 sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="find_doctors.html" class="p-2 rounded-full hover:bg-surface transition-colors text-on-surface-variant">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl overflow-hidden shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71f1536785?auto=format&fit=crop&q=80&w=100" alt="Dr. Sarah Jenkins" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <h1 class="font-bold text-on-surface leading-tight">Dr. Sarah Jenkins</h1>
+                    <p class="text-xs text-primary font-semibold">Cardiologist • Specialist</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hidden md:flex items-center gap-2">
+            <div class="flex items-center gap-1 bg-surface-container-low px-3 py-1.5 rounded-full border border-outline-variant/20">
+                <span class="material-symbols-outlined text-amber-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="text-xs font-bold">4.9</span>
+            </div>
+            <span class="text-xs text-on-surface-variant/60">(124 reviews)</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col max-w-4xl mx-auto w-full p-6 md:p-8">
+        
+        <!-- Progress Steps -->
+        <div class="mb-12">
+            <div class="flex items-center justify-between relative">
+                <!-- Progress Line -->
+                <div class="absolute top-1/2 left-0 w-full h-0.5 bg-outline-variant/30 -translate-y-1/2 z-0"></div>
+                <div id="progress-bar" class="absolute top-1/2 left-0 w-0 h-0.5 bg-primary -translate-y-1/2 z-0 transition-all duration-500"></div>
+
+                <!-- Step Indicators -->
+                <div class="step-indicator active relative z-10 flex flex-col items-center gap-2 group" data-step="1">
+                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-lg shadow-primary/20 transition-all duration-300">1</div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-primary">Schedule</span>
+                </div>
+                <div class="step-indicator relative z-10 flex flex-col items-center gap-2 group" data-step="2">
+                    <div class="w-10 h-10 rounded-full bg-white border-2 border-outline-variant text-on-surface-variant flex items-center justify-center font-bold transition-all duration-300">2</div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/40">Patient</span>
+                </div>
+                <div class="step-indicator relative z-10 flex flex-col items-center gap-2 group" data-step="3">
+                    <div class="w-10 h-10 rounded-full bg-white border-2 border-outline-variant text-on-surface-variant flex items-center justify-center font-bold transition-all duration-300">3</div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/40">Details</span>
+                </div>
+                <div class="step-indicator relative z-10 flex flex-col items-center gap-2 group" data-step="4">
+                    <div class="w-10 h-10 rounded-full bg-white border-2 border-outline-variant text-on-surface-variant flex items-center justify-center font-bold transition-all duration-300">4</div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/40">Review</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="flex-1">
+            
+            <!-- Step 1: Schedule -->
+            <div id="step-1" class="step-content active">
+                <h2 class="text-2xl font-bold text-on-surface mb-2">Select Date & Time</h2>
+                <p class="text-on-surface-variant mb-8">Choose a convenient slot for your consultation.</p>
+
+                <!-- Date Picker (Calendar View) -->
+                <div class="mb-8 bg-white p-5 rounded-3xl border border-outline-variant/30 shadow-sm max-w-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-base" id="current-month-display">October 2024</h3>
+                        <div class="flex gap-1">
+                            <button onclick="changeMonth(-1)" class="p-1.5 rounded-lg border border-outline-variant/30 hover:bg-surface transition-colors">
+                                <span class="material-symbols-outlined text-sm">chevron_left</span>
+                            </button>
+                            <button onclick="changeMonth(1)" class="p-1.5 rounded-lg border border-outline-variant/30 hover:bg-surface transition-colors">
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-7 gap-1 mb-2">
+                        <div class="text-center text-[8px] font-bold text-on-surface-variant/40 uppercase tracking-widest">Sun</div>
+                        <div class="text-center text-[8px] font-bold text-on-surface-variant/40 uppercase tracking-widest">Mon</div>
+                        <div class="text-center text-[8px] font-bold text-on-surface-variant/40 uppercase tracking-widest">Tue</div>
+                        <div class="text-center text-[8px] font-bold text-on-surface-variant/40 uppercase tracking-widest">Wed</div>
+                        <div class="text-center text-[8px] font-bold text-on-surface-variant/40 uppercase tracking-widest">Thu</div>
+                        <div class="text-center text-[8px] font-bold text-on-surface-variant/40 uppercase tracking-widest">Fri</div>
+                        <div class="text-center text-[8px] font-bold text-on-surface-variant/40 uppercase tracking-widest">Sat</div>
+                    </div>
+                    
+                    <div id="calendar-grid" class="calendar-grid">
+                        <!-- Days will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Time Slots -->
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="flex items-center gap-2 font-bold mb-4 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-xl">light_mode</span>
+                            Morning Slots
+                        </h3>
+                        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3" id="morning-slots">
+                            <!-- Slots will be injected -->
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="flex items-center gap-2 font-bold mb-4 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-xl">wb_sunny</span>
+                            Afternoon Slots
+                        </h3>
+                        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3" id="afternoon-slots">
+                            <!-- Slots will be injected -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Patient Info -->
+            <div id="step-2" class="step-content">
+                <h2 class="text-2xl font-bold text-on-surface mb-2">Patient Information</h2>
+                <p class="text-on-surface-variant mb-8">Who is this appointment for?</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant ml-1">Full Name</label>
+                        <input type="text" value="John Doe" class="w-full bg-white border-outline-variant/30 rounded-2xl p-4 focus:ring-primary focus:border-primary shadow-sm" placeholder="e.g. John Doe">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant ml-1">Relationship</label>
+                        <select class="w-full bg-white border-outline-variant/30 rounded-2xl p-4 focus:ring-primary focus:border-primary shadow-sm">
+                            <option>Myself</option>
+                            <option>Child</option>
+                            <option>Spouse</option>
+                            <option>Parent</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant ml-1">Age</label>
+                        <input type="number" value="28" class="w-full bg-white border-outline-variant/30 rounded-2xl p-4 focus:ring-primary focus:border-primary shadow-sm" placeholder="28">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant ml-1">Gender</label>
+                        <div class="flex gap-4">
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="gender" value="male" checked class="hidden peer">
+                                <div class="p-4 border-2 border-outline-variant/30 rounded-2xl text-center font-bold peer-checked:border-primary peer-checked:bg-primary/5 transition-all">Male</div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="gender" value="female" class="hidden peer">
+                                <div class="p-4 border-2 border-outline-variant/30 rounded-2xl text-center font-bold peer-checked:border-primary peer-checked:bg-primary/5 transition-all">Female</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Visit Details -->
+            <div id="step-3" class="step-content">
+                <h2 class="text-2xl font-bold text-on-surface mb-2">Visit Details</h2>
+                <p class="text-on-surface-variant mb-8">Help the doctor prepare for your visit.</p>
+
+                <div class="space-y-6">
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-on-surface-variant ml-1">Reason for Visit</label>
+                        <textarea class="w-full bg-white border-outline-variant/30 rounded-2xl p-4 h-32 focus:ring-primary focus:border-primary shadow-sm" placeholder="Describe your symptoms or reason for the visit..."></textarea>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <label class="text-sm font-bold text-on-surface-variant ml-1">Type of Consultation</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="type" value="in-person" checked class="hidden peer">
+                                <div class="p-5 border-2 border-outline-variant/30 rounded-3xl flex items-center gap-4 peer-checked:border-primary peer-checked:bg-primary/5 transition-all">
+                                    <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                                        <span class="material-symbols-outlined">home_health</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold">In-Person Visit</p>
+                                        <p class="text-xs text-on-surface-variant">At the clinic</p>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="type" value="video" class="hidden peer">
+                                <div class="p-5 border-2 border-outline-variant/30 rounded-3xl flex items-center gap-4 peer-checked:border-primary peer-checked:bg-primary/5 transition-all">
+                                    <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                                        <span class="material-symbols-outlined">videocam</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold">Video Call</p>
+                                        <p class="text-xs text-on-surface-variant">Online consultation</p>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Review -->
+            <div id="step-4" class="step-content">
+                <h2 class="text-2xl font-bold text-on-surface mb-2">Confirm Appointment</h2>
+                <p class="text-on-surface-variant mb-8">Please review your booking details.</p>
+
+                <div class="space-y-6">
+                    <div class="glass-card rounded-3xl p-6 border border-white shadow-xl">
+                        <div class="flex items-center gap-4 mb-6 pb-6 border-b border-outline-variant/20">
+                            <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-md">
+                                <img src="https://images.unsplash.com/photo-1559839734-2b71f1536785?auto=format&fit=crop&q=80&w=150" alt="Dr. Jenkins" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xl">Dr. Sarah Jenkins</h3>
+                                <p class="text-primary font-bold text-sm" id="confirm-type">Cardiologist • In-Person Visit</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-primary">event</span>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-on-surface-variant uppercase">Date</p>
+                                        <p class="font-bold" id="confirm-date">Wednesday, Oct 24</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-primary">schedule</span>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-on-surface-variant uppercase">Time</p>
+                                        <p class="font-bold" id="confirm-time">10:30 AM</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-primary">person</span>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-on-surface-variant uppercase">Patient</p>
+                                        <p class="font-bold">John Doe (Self)</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-primary">payments</span>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-on-surface-variant uppercase">Consultation Fee</p>
+                                        <p class="font-bold">$120.00</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface-container-high/50 p-4 rounded-2xl flex items-start gap-3 border border-primary/10">
+                        <span class="material-symbols-outlined text-primary mt-0.5">info</span>
+                        <p class="text-xs text-on-surface-variant leading-relaxed">By confirming, you agree to our <a href="#" class="text-primary font-bold">Cancellation Policy</a>. A reminder will be sent to your email 24 hours before the appointment.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success State: Simplified Center Design -->
+            <div id="step-success" class="step-content items-center text-center max-w-lg mx-auto">
+                <!-- Success Hero -->
+                <div class="relative mb-8 flex justify-center w-full">
+                    <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-white glow-success relative z-10 mx-auto">
+                        <span class="material-symbols-outlined text-4xl">check_circle</span>
+                    </div>
+                    <!-- Animated Rings -->
+                    <div class="absolute inset-0 bg-primary/20 rounded-full animate-ping w-20 h-20 mx-auto"></div>
+                </div>
+
+                <h2 class="text-3xl font-bold text-on-surface mb-3">Booking Confirmed</h2>
+                <p class="text-on-surface-variant mb-8 text-sm px-6">Your appointment with <span class="text-on-surface font-bold">Dr. Sarah Jenkins</span> has been scheduled successfully.</p>
+
+                <!-- Summary Card -->
+                <div class="w-full bg-white rounded-[2rem] p-6 border border-outline-variant/30 space-y-4 mb-8 shadow-sm text-left">
+                    <div class="flex items-center justify-between pb-3 border-b border-outline-variant/10">
+                        <span class="text-xs text-on-surface-variant font-medium">Date & Time</span>
+                        <span class="text-xs font-bold text-on-surface" id="success-date-time">Oct 24, 2024 • 10:30 AM</span>
+                    </div>
+                    <div class="flex items-center justify-between pb-3 border-b border-outline-variant/10">
+                        <span class="text-xs text-on-surface-variant font-medium">Consultation</span>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-xs text-primary" id="success-type-icon">home_health</span>
+                            <span class="text-xs font-bold text-on-surface" id="success-type-text">In-Person</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-on-surface-variant font-medium">Patient</span>
+                        <span class="text-xs font-bold text-on-surface">John Doe</span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="w-full flex flex-col gap-3 px-6">
+                    <button class="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-xl">calendar_today</span>
+                        Add to Calendar
+                    </button>
+                    <a href="user_dashboard.html" class="w-full bg-white text-on-surface py-4 rounded-2xl font-bold border border-outline-variant/30 hover:bg-surface transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-on-surface-variant text-xl">dashboard</span>
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Sticky Footer Navigation -->
+        <footer id="flow-nav" class="mt-12 flex items-center justify-between sticky bottom-8 bg-white/50 backdrop-blur-md p-4 rounded-3xl border border-white/30 shadow-2xl z-40">
+            <button id="prev-btn" class="px-8 py-4 rounded-2xl font-bold text-on-surface-variant hover:bg-white transition-all invisible">Back</button>
+            <button id="next-btn" class="bg-primary text-on-primary px-10 py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2">
+                <span>Continue</span>
+                <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+        </footer>
+
+    </main>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        
+        // Data management
+        const bookingData = {
+            date: '',
+            time: '',
+            patient: 'John Doe',
+            reason: '',
+            type: 'in-person'
+        };
+
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        let calendarDate = new Date(); // Date for calendar navigation
+        let selectedFullDate = new Date(); // Currently selected date
+        selectedFullDate.setDate(selectedFullDate.getDate() + 2); // Default to 2 days from now
+
+        // Initialize Calendar
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const monthDisplay = document.getElementById('current-month-display');
+            
+            const year = calendarDate.getFullYear();
+            const month = calendarDate.getMonth();
+            
+            monthDisplay.innerText = `${months[month]} ${year}`;
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            grid.innerHTML = '';
+            
+            // Empty slots
+            for (let i = 0; i < firstDay; i++) {
+                grid.innerHTML += `<div></div>`;
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const isPast = date < today;
+                const isSelected = selectedFullDate.getDate() === day && selectedFullDate.getMonth() === month && selectedFullDate.getFullYear() === year;
+                const isToday = date.getTime() === today.getTime();
+                
+                const dayEl = document.createElement('div');
+                dayEl.className = `calendar-day ${isPast ? 'disabled' : ''} ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`;
+                dayEl.innerText = day;
+                
+                if (!isPast) {
+                    dayEl.onclick = () => selectDate(day);
+                }
+                
+                grid.appendChild(dayEl);
+            }
+
+            // Update bookingData date string
+            bookingData.date = `${days[selectedFullDate.getDay()]}, ${months[selectedFullDate.getMonth()].substring(0,3)} ${selectedFullDate.getDate()}`;
+            updateConfirmation();
+        }
+
+        function selectDate(day) {
+            selectedFullDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), day);
+            renderCalendar();
+        }
+
+        function changeMonth(dir) {
+            calendarDate.setMonth(calendarDate.getMonth() + dir);
+            renderCalendar();
+        }
+
+        // Initialize Time Slots
+        function initTimeSlots() {
+            const morning = ['09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM'];
+            const afternoon = ['02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM', '04:00 PM'];
+            
+            const morningContainer = document.getElementById('morning-slots');
+            const afternoonContainer = document.getElementById('afternoon-slots');
+            
+            morning.forEach((time, i) => {
+                const slot = createSlot(time, i === 3);
+                morningContainer.appendChild(slot);
+            });
+            
+            afternoon.forEach(time => {
+                const slot = createSlot(time);
+                afternoonContainer.appendChild(slot);
+            });
+        }
+
+        function createSlot(time, isSelected = false) {
+            const btn = document.createElement('button');
+            btn.className = `time-slot py-3 px-2 rounded-xl border-2 border-outline-variant/10 bg-white text-xs font-bold transition-all hover:border-primary/50 ${isSelected ? 'selected' : ''}`;
+            btn.innerText = time;
+            if (isSelected) bookingData.time = time;
+
+            btn.onclick = () => {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                btn.classList.add('selected');
+                bookingData.time = time;
+                updateConfirmation();
+            };
+            return btn;
+        }
+
+        function updateConfirmation() {
+            document.getElementById('confirm-date').innerText = bookingData.date;
+            document.getElementById('confirm-time').innerText = bookingData.time;
+            
+            const typeText = bookingData.type === 'in-person' ? 'In-Person Visit' : 'Video Call';
+            document.getElementById('confirm-type').innerText = `Cardiologist • ${typeText}`;
+            
+            // Update success screen too
+            if (document.getElementById('success-date-time')) {
+                document.getElementById('success-date-time').innerText = `${bookingData.date} • ${bookingData.time}`;
+                document.getElementById('success-type-text').innerText = typeText.replace(' Visit', '');
+                document.getElementById('success-type-icon').innerText = bookingData.type === 'in-person' ? 'home_health' : 'videocam';
+            }
+        }
+
+        // Navigation Logic
+        function updateSteps() {
+            // Update Visibility
+            document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            
+            // Animation
+            gsap.fromTo(`#step-${currentStep}`, 
+                { opacity: 0, y: 20 }, 
+                { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+            );
+
+            // Update Indicators
+            document.querySelectorAll('.step-indicator').forEach((ind, i) => {
+                const stepNum = i + 1;
+                const circle = ind.querySelector('div');
+                const label = ind.querySelector('span');
+
+                if (stepNum < currentStep) {
+                    circle.className = "w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-lg shadow-primary/20";
+                    circle.innerHTML = '<span class="material-symbols-outlined text-lg">check</span>';
+                    label.className = "text-[10px] font-bold uppercase tracking-wider text-primary";
+                } else if (stepNum === currentStep) {
+                    circle.className = "w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-lg shadow-primary/20";
+                    circle.innerText = stepNum;
+                    label.className = "text-[10px] font-bold uppercase tracking-wider text-primary";
+                } else {
+                    circle.className = "w-10 h-10 rounded-full bg-white border-2 border-outline-variant text-on-surface-variant flex items-center justify-center font-bold";
+                    circle.innerText = stepNum;
+                    label.className = "text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/40";
+                }
+            });
+
+            // Update Progress Bar
+            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            // Update Buttons
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+            
+            if (currentStep === totalSteps) {
+                nextBtn.innerHTML = '<span>Confirm Booking</span><span class="material-symbols-outlined">verified</span>';
+                nextBtn.className = "bg-primary text-on-primary px-10 py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2";
+            } else {
+                nextBtn.innerHTML = '<span>Continue</span><span class="material-symbols-outlined">arrow_forward</span>';
+                nextBtn.className = "bg-primary text-on-primary px-10 py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2";
+            }
+        }
+
+        document.getElementById('next-btn').onclick = () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateSteps();
+            } else {
+                // Final confirmation
+                showSuccess();
+            }
+        };
+
+        document.getElementById('prev-btn').onclick = () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateSteps();
+            }
+        };
+
+        function showSuccess() {
+            // Lock body scroll for success screen
+            document.body.classList.add('overflow-hidden');
+            document.body.classList.remove('min-h-screen');
+            document.body.classList.add('h-screen');
+            
+            document.getElementById('flow-nav').classList.add('hidden');
+            
+            // Hide progress indicators if they exist
+            const progress = document.querySelector('.mb-12');
+            if (progress) progress.classList.add('hidden');
+            
+            document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+            const successStep = document.getElementById('step-success');
+            successStep.classList.add('active');
+            
+            // Adjust success step for full-screen centering
+            successStep.classList.add('flex-1', 'flex', 'flex-col', 'justify-center');
+            
+            gsap.fromTo(successStep, 
+                { opacity: 0, y: 20 }, 
+                { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
+            );
+        }
+
+        // Init
+        window.onload = () => {
+            renderCalendar();
+            initTimeSlots();
+            
+            // Listen for consultation type changes
+            document.querySelectorAll('input[name="type"]').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    bookingData.type = e.target.value;
+                    updateConfirmation();
+                });
+            });
+
+            updateSteps();
+        };
+    </script>
+</body>
+</html>
